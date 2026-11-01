@@ -40,10 +40,6 @@ button:disabled{opacity:.6}
 <h1>Paymenttobus.sk</h1>
 <p class="sub">Make Your Payment</p>
 
-<label>Payment Amount (₹)</label>
-<input id="amount" type="number" min="1"
- step="0.01" placeholder="Enter amount" required>
-
 <div class="qr">
 <h3>Scan QR & Pay</h3>
 <img src="qr.png.jpeg" alt="UPI Payment QR">
@@ -53,6 +49,9 @@ button:disabled{opacity:.6}
 <form id="paymentForm">
 <label>Your Name</label>
 <input id="name" required placeholder="Enter your name">
+
+<label>Group Name</label>
+<input id="groupName" required placeholder="Enter your group name">
 
 <label>Mobile Number</label>
 <input id="mobile" type="tel" required
@@ -80,16 +79,13 @@ Do not upload passwords or UPI PIN.
 
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw75UEn9SXfe-akLDp0tN3Ne0cxQLJvvMC4azrFbe0XNByGgXnV4F0VIjs1cpbNeXKYZw/exec";
+
 document.getElementById("paymentForm")
 .addEventListener("submit", async function(e){
  e.preventDefault();
 
- const amount = Number(document.getElementById("amount").value);
  const file = document.getElementById("screenshot").files[0];
 
- if(!amount || amount <= 0){
-  alert("Enter a valid amount"); return;
- }
  if(!file || file.size > 2*1024*1024){
   alert("Upload an image under 2 MB"); return;
  }
@@ -108,8 +104,8 @@ document.getElementById("paymentForm")
   });
 
   const payload = {
-   amount: amount,
    name: document.getElementById("name").value.trim(),
+   groupName: document.getElementById("groupName").value.trim(),
    mobile: document.getElementById("mobile").value.trim(),
    utr: document.getElementById("utr").value.trim(),
    fileName: file.name,
@@ -128,11 +124,12 @@ document.getElementById("paymentForm")
    "Submission sent. Please wait for payment verification.";
   status.style.color="green";
   document.getElementById("paymentForm").reset();
-  document.getElementById("amount").value="";
+
  }catch(err){
   status.textContent="Submission failed. Please try again.";
   status.style.color="red";
  }
+
  btn.disabled=false;
  btn.textContent="Submit Payment";
 });
